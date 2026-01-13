@@ -6,6 +6,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Student } from './infrastructure/database/entities/Student';
 
 @Module({
     imports: [
@@ -17,7 +18,7 @@ import { AppService } from './app.service';
           const clientUrl = config.get<string>('DATABASE_URL');
           const base = {
             driver: PostgreSqlDriver,
-            entities: [],
+            entities: [Student],
             debug: true,
             allowGlobalContext: true,
             migrations: {
