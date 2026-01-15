@@ -19,6 +19,7 @@ const path_1 = require("path");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const Student_1 = require("./infrastructure/database/entities/Student");
+const students_module_1 = require("./modules/students/students.module");
 let AppModule = class AppModule {
     constructor(orm) {
         this.orm = orm;
@@ -62,6 +63,7 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
+            students_module_1.StudentsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

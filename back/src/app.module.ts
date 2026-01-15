@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Student } from './infrastructure/database/entities/Student';
+import { StudentsModule } from './modules/students/students.module';
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { Student } from './infrastructure/database/entities/Student';
           };
         },
       }),
+      StudentsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
