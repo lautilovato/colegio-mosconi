@@ -9,29 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateStudentDto = void 0;
+exports.UpdateClassDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateStudentDto {
+class UpdateClassDto {
 }
-exports.CreateStudentDto = CreateStudentDto;
+exports.UpdateClassDto = UpdateClassDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateStudentDto.prototype, "firstName", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateStudentDto.prototype, "lastName", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateStudentDto.prototype, "dni", void 0);
+], UpdateClassDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
-], CreateStudentDto.prototype, "classId", void 0);
-//# sourceMappingURL=createStudent.dto.js.map
+], UpdateClassDto.prototype, "year", void 0);
+//# sourceMappingURL=updateClass.dto.js.map

@@ -9,34 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Student = void 0;
+exports.Class = void 0;
 const core_1 = require("@mikro-orm/core");
 const BaseEntity_1 = require("./BaseEntity");
-const Class_1 = require("./Class");
-let Student = class Student extends BaseEntity_1.CustomBaseEntity {
+const Student_1 = require("./Student");
+let Class = class Class extends BaseEntity_1.CustomBaseEntity {
+    constructor() {
+        super(...arguments);
+        this.students = new core_1.Collection(this);
+    }
 };
-exports.Student = Student;
+exports.Class = Class;
 __decorate([
     (0, core_1.PrimaryKey)({ type: 'integer', autoincrement: true }),
     __metadata("design:type", Object)
-], Student.prototype, "id", void 0);
+], Class.prototype, "id", void 0);
 __decorate([
-    (0, core_1.Property)({ fieldName: 'first_name', nullable: true }),
+    (0, core_1.Property)({ fieldName: 'name', nullable: false }),
     __metadata("design:type", String)
-], Student.prototype, "firstName", void 0);
+], Class.prototype, "name", void 0);
 __decorate([
-    (0, core_1.Property)({ fieldName: 'last_name', nullable: true }),
-    __metadata("design:type", String)
-], Student.prototype, "lastName", void 0);
+    (0, core_1.Property)({ fieldName: 'year', nullable: true }),
+    __metadata("design:type", Number)
+], Class.prototype, "year", void 0);
 __decorate([
-    (0, core_1.Property)({ fieldName: 'dni', nullable: true }),
-    __metadata("design:type", String)
-], Student.prototype, "dni", void 0);
-__decorate([
-    (0, core_1.ManyToOne)(() => Class_1.Class, { fieldName: 'class_id', nullable: true }),
-    __metadata("design:type", Class_1.Class)
-], Student.prototype, "class", void 0);
-exports.Student = Student = __decorate([
+    (0, core_1.OneToMany)(() => Student_1.Student, (student) => student.class),
+    __metadata("design:type", Object)
+], Class.prototype, "students", void 0);
+exports.Class = Class = __decorate([
     (0, core_1.Entity)()
-], Student);
-//# sourceMappingURL=Student.js.map
+], Class);
+//# sourceMappingURL=Class.js.map
