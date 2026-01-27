@@ -8,8 +8,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Student } from './infrastructure/database/entities/Student';
 import { Class } from './infrastructure/database/entities/Class';
+import { Attendance } from './infrastructure/database/entities/Attendance';
 import { StudentsModule } from './modules/students/students.module';
 import { ClassModule } from './modules/class/class.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 
 @Module({
     imports: [
@@ -21,7 +23,7 @@ import { ClassModule } from './modules/class/class.module';
           const clientUrl = config.get<string>('DATABASE_URL');
           const base = {
             driver: PostgreSqlDriver,
-            entities: [Student, Class],
+            entities: [Student, Class, Attendance],
             debug: true,
             allowGlobalContext: true,
             migrations: {
@@ -46,6 +48,7 @@ import { ClassModule } from './modules/class/class.module';
       }),
       StudentsModule,
       ClassModule,
+      AttendanceModule,
     ],
     controllers: [AppController],
     providers: [AppService],

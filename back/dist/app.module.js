@@ -20,8 +20,10 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const Student_1 = require("./infrastructure/database/entities/Student");
 const Class_1 = require("./infrastructure/database/entities/Class");
+const Attendance_1 = require("./infrastructure/database/entities/Attendance");
 const students_module_1 = require("./modules/students/students.module");
 const class_module_1 = require("./modules/class/class.module");
+const attendance_module_1 = require("./modules/attendance/attendance.module");
 let AppModule = class AppModule {
     constructor(orm) {
         this.orm = orm;
@@ -44,7 +46,7 @@ exports.AppModule = AppModule = __decorate([
                     const clientUrl = config.get('DATABASE_URL');
                     const base = {
                         driver: postgresql_1.PostgreSqlDriver,
-                        entities: [Student_1.Student, Class_1.Class],
+                        entities: [Student_1.Student, Class_1.Class, Attendance_1.Attendance],
                         debug: true,
                         allowGlobalContext: true,
                         migrations: {
@@ -67,6 +69,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             students_module_1.StudentsModule,
             class_module_1.ClassModule,
+            attendance_module_1.AttendanceModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
