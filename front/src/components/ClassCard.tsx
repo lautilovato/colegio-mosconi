@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import './ClassCard.css';
 
 interface ClassCardProps {
@@ -11,10 +12,15 @@ interface ClassCardProps {
 }
 
 const ClassCard = ({ classData }: ClassCardProps) => {
+  const navigate = useNavigate();
   const studentCount = classData.students?.length || 0;
 
+  const handleClick = () => {
+    navigate(`/class/${classData.id}`);
+  };
+
   return (
-    <div className="class-card">
+    <div className="class-card" onClick={handleClick}>
       <div className="card-header">
         <div className="class-icon">
           <svg

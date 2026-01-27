@@ -1,0 +1,282 @@
+.student-list {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8f4f8;
+  gap: 1rem;
+}
+
+.list-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.list-header h2 {
+  font-size: 1.8rem;
+  color: #1e3c72;
+  font-weight: 700;
+  margin: 0;
+}
+
+.register-student-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  white-space: nowrap;
+}
+
+.register-student-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.register-student-button:active {
+  transform: translateY(0);
+}
+
+.register-student-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.empty-students {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Contenedor de estudiantes en formato lista */
+.students-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Fila de estudiante - formato horizontal compacto */
+.student-row {
+  background: #f8fafb;
+  border: 2px solid #e8f4f8;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  min-height: 70px;
+}
+
+.student-row:hover {
+  border-color: #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+  transform: translateX(4px);
+}
+
+/* Información básica del estudiante */
+.student-basic-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.student-avatar-small {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.student-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  overflow: hidden;
+}
+
+.student-name-compact {
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-dni-compact {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Estadísticas horizontales */
+.student-stats-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stat-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 2px solid;
+  min-width: 80px;
+}
+
+.stat-percentage {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label-small {
+  font-size: 0.7rem;
+  color: #7f8c8d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.2rem;
+}
+
+/* Mini estadísticas */
+.stats-mini {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+}
+
+.stat-mini.present {
+  background: #d4edda;
+}
+
+.stat-mini.absent {
+  background: #f8d7da;
+}
+
+.stat-mini.late {
+  background: #fff3cd;
+}
+
+.stat-icon-small {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.stat-mini.present .stat-icon-small {
+  color: #27ae60;
+}
+
+.stat-mini.absent .stat-icon-small {
+  color: #e74c3c;
+}
+
+.stat-mini.late .stat-icon-small {
+  color: #f39c12;
+}
+
+.stat-number {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.no-stats {
+  color: #95a5a6;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .student-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .student-basic-info {
+    width: 100%;
+  }
+
+  .student-stats-horizontal {
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .stats-mini {
+    gap: 0.5rem;
+  }
+
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .list-header-left {
+    width: 100%;
+  }
+
+  .register-student-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-stats-horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .stat-badge {
+    width: 100%;
+  }
+
+  .stats-mini {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
