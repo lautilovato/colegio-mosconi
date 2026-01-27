@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ClassCard from '../components/ClassCard';
 import ClassFilters from '../components/ClassFilters';
+import RegisterClassModal from '../components/RegisterClassModal';
 import './HomePage.css';
 
 interface Class {
@@ -18,6 +19,9 @@ const HomePage = () => {
   // Estados para los filtros
   const [filterName, setFilterName] = useState('');
   const [filterYear, setFilterYear] = useState('');
+
+  // Estado para el modal de registro de clase
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   useEffect(() => {
     fetchClasses();
@@ -72,6 +76,19 @@ const HomePage = () => {
     fetchClasses();
   };
 
+  const handleOpenRegisterModal = () => {
+    setIsRegisterModalOpen(true);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setIsRegisterModalOpen(false);
+  };
+
+  const handleClassRegistered = () => {
+    setIsRegisterModalOpen(false);
+    handleClearFilters(); // Recargar todas las clases
+  };
+
   return (
     <div className="home-page">
       <main className="main-content">
@@ -82,6 +99,7 @@ const HomePage = () => {
           onFilterYearChange={setFilterYear}
           onSearch={handleSearch}
           onClear={handleClearFilters}
+          onRegisterClass={handleOpenRegisterModal}
         />
 
         {loading && (
@@ -119,6 +137,13 @@ const HomePage = () => {
           </div>
         )}
       </main>
+
+      {isRegisterModalOpen && (
+        <RegisterClassModal
+          onClose={handleCloseRegisterModal}
+          onSuccess={handleClassRegistered}
+        />
+      )}
     </div>
   );
 };

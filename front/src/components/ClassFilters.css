@@ -12,6 +12,15 @@
   gap: 1.5rem;
   align-items: flex-end;
   flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.filters-left {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 .filter-group {
@@ -51,11 +60,13 @@
 .filter-group input[type="number"]::-webkit-inner-spin-button,
 .filter-group input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 .filter-group input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .filter-actions {
@@ -104,11 +115,47 @@
   border-color: #d0d8e0;
 }
 
+.register-class-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+  white-space: nowrap;
+}
+
+.register-class-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(39, 174, 96, 0.4);
+}
+
+.register-class-button:active {
+  transform: translateY(0);
+}
+
+.register-class-button svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .filters-container {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .filters-left {
+    flex-direction: column;
+    width: 100%;
   }
 
   .filter-group {
@@ -121,6 +168,11 @@
 
   .search-button,
   .clear-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .register-class-button {
     width: 100%;
     justify-content: center;
   }
