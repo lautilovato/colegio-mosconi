@@ -21,8 +21,8 @@ let ClassController = class ClassController {
     constructor(classService) {
         this.classService = classService;
     }
-    async getAllClasses() {
-        return this.classService.findAll();
+    async getAllClasses(name, year) {
+        return this.classService.findAll(name, year);
     }
     async getClassById(id) {
         return this.classService.findOne(id);
@@ -40,8 +40,10 @@ let ClassController = class ClassController {
 exports.ClassController = ClassController;
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('name')),
+    __param(1, (0, common_1.Query)('year')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ClassController.prototype, "getAllClasses", null);
 __decorate([

@@ -7,6 +7,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Query,
     NotFoundException,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
@@ -19,8 +20,11 @@ export class ClassController {
     constructor(private readonly classService: ClassService) { }
 
     @Get()
-    async getAllClasses(): Promise<Class[]> {
-        return this.classService.findAll();
+    async getAllClasses(
+        @Query('name') name?: string,
+        @Query('year') year?: string,
+    ): Promise<Class[]> {
+        return this.classService.findAll(name, year);
     }
 
     @Get(':id')

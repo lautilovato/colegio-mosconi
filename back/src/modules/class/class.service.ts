@@ -30,8 +30,22 @@ export class ClassService {
     return classEntity;
   }
 
-  async findAll(): Promise<Class[]> {
-    return this.classRepository.findAll({ populate: ['students'] });
+  async findAll(name?: string, year?: string): Promise<Class[]> {
+    const filter: any = {};
+
+    // Solo agregar filtros si los valores no están vacíos
+    if (name && name.trim()) {
+      filter.name = { $ilike: `%${name.trim()}%` };
+    }
+
+    if (year && year.trim()) {
+      const yearNum = parseInt(year.trim());
+      if (!isNaN(yearNum)) {
+        filter.year = yearNum;
+      }
+    }
+
+    return this.classRepository.find(filter, { populate: ['students'] });
   }
 
   async update(id: number, updateClassDto: UpdateClassDto): Promise<Class> {

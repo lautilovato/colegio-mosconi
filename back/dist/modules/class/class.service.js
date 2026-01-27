@@ -34,8 +34,18 @@ let ClassService = class ClassService {
         }
         return classEntity;
     }
-    async findAll() {
-        return this.classRepository.findAll({ populate: ['students'] });
+    async findAll(name, year) {
+        const filter = {};
+        if (name && name.trim()) {
+            filter.name = { $ilike: `%${name.trim()}%` };
+        }
+        if (year && year.trim()) {
+            const yearNum = parseInt(year.trim());
+            if (!isNaN(yearNum)) {
+                filter.year = yearNum;
+            }
+        }
+        return this.classRepository.find(filter, { populate: ['students'] });
     }
     async update(id, updateClassDto) {
         const existingClass = await this.classRepository.findOne({ id });

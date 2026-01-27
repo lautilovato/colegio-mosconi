@@ -5,7 +5,7 @@ import { CreateClassDto } from './dto/createClass.dto';
 export declare class ClassController {
     private readonly classService;
     constructor(classService: ClassService);
-    getAllClasses(): Promise<Class[]>;
+    getAllClasses(name?: string, year?: string): Promise<Class[]>;
     getClassById(id: number): Promise<Class>;
     createClass(createClassDto: CreateClassDto): Promise<Class>;
     deleteClass(id: number): Promise<void>;

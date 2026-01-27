@@ -9,7 +9,7 @@ export declare class ClassService {
     constructor(classRepository: ClassRepository, em: EntityManager);
     create(createClassDto: CreateClassDto): Promise<Class>;
     findOne(id: number): Promise<Class>;
-    findAll(): Promise<Class[]>;
+    findAll(name?: string, year?: string): Promise<Class[]>;
     update(id: number, updateClassDto: UpdateClassDto): Promise<Class>;
     delete(id: number): Promise<void>;
     assignStudents(classId: number, studentIds: number[]): Promise<Class>;

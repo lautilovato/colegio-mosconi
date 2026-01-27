@@ -3,7 +3,7 @@
   background: #f0f4f8;
   display: flex;
   flex-direction: column;
-  padding-top: 140px; /* Espacio para el header fijo */
+  padding-top: 140px;
 }
 
 .main-content {
@@ -117,6 +117,24 @@
   color: #7f8c8d;
   font-size: 1.3rem;
   font-weight: 500;
+}
+
+.clear-filters-link {
+  background: transparent;
+  color: #3498db;
+  border: 2px solid #3498db;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.clear-filters-link:hover {
+  background: #3498db;
+  color: white;
 }
 
 /* Responsive */

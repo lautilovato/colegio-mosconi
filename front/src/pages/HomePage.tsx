@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ClassCard from '../components/ClassCard';
+import ClassFilters from '../components/ClassFilters';
 import './HomePage.css';
 
 interface Class {
@@ -13,15 +14,32 @@ const HomePage = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Estados para los filtros
+  const [filterName, setFilterName] = useState('');
+  const [filterYear, setFilterYear] = useState('');
 
   useEffect(() => {
     fetchClasses();
   }, []);
 
-  const fetchClasses = async () => {
+  const fetchClasses = async (name?: string, year?: string) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/classes');
+      setError(null);
+      
+      // Construir URL con query parameters solo si tienen valor
+      const params = new URLSearchParams();
+      if (name && name.trim()) {
+        params.append('name', name.trim());
+      }
+      if (year && year.trim()) {
+        params.append('year', year.trim());
+      }
+      
+      const url = `http://localhost:3000/classes${params.toString() ? '?' + params.toString() : ''}`;
+      
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Error al cargar las clases');
       }
@@ -29,14 +47,43 @@ const HomePage = () => {
       setClasses(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
+      setClasses([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSearch = () => {
+    // Solo buscar si al menos un filtro tiene valor
+    const trimmedName = filterName.trim();
+    const trimmedYear = filterYear.trim();
+    
+    if (!trimmedName && !trimmedYear) {
+      // Si ambos filtros están vacíos, cargar todas las clases
+      fetchClasses();
+    } else {
+      fetchClasses(trimmedName, trimmedYear);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setFilterName('');
+    setFilterYear('');
+    fetchClasses();
+  };
+
   return (
     <div className="home-page">
       <main className="main-content">
+        <ClassFilters
+          filterName={filterName}
+          filterYear={filterYear}
+          onFilterNameChange={setFilterName}
+          onFilterYearChange={setFilterYear}
+          onSearch={handleSearch}
+          onClear={handleClearFilters}
+        />
+
         {loading && (
           <div className="loading">
             <div className="spinner"></div>
@@ -47,7 +94,7 @@ const HomePage = () => {
         {error && (
           <div className="error-message">
             <p>❌ {error}</p>
-            <button onClick={fetchClasses} className="retry-button">
+            <button onClick={() => fetchClasses()} className="retry-button">
               Reintentar
             </button>
           </div>
@@ -55,7 +102,12 @@ const HomePage = () => {
 
         {!loading && !error && classes.length === 0 && (
           <div className="empty-state">
-            <p>No hay clases registradas</p>
+            <p>No se encontraron clases{(filterName.trim() || filterYear.trim()) ? ' con los filtros aplicados' : ''}</p>
+            {(filterName.trim() || filterYear.trim()) && (
+              <button onClick={handleClearFilters} className="clear-filters-link">
+                Limpiar filtros
+              </button>
+            )}
           </div>
         )}
 
