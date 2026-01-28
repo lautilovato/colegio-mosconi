@@ -2,6 +2,7 @@ import { defineConfig } from '@mikro-orm/postgresql';
 import { join } from 'path';
 import { Migrator } from '@mikro-orm/migrations';
 import * as dotenv from 'dotenv';
+import { AcademicPeriod } from './database/entities/AcademicPeriod';
 
 // Cargar variables de entorno desde la raíz del proyecto
 dotenv.config({ path: join(__dirname, '../../', '.env') });
@@ -12,8 +13,8 @@ export default defineConfig({
   dbName: process.env.DATABASE_NAME,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  entities: ['./dist/infrastructure/database/entities'],
-  entitiesTs: ['./src/infrastructure/database/entities'],
+  entities: ['./dist/infrastructure/database/entities', AcademicPeriod],
+  entitiesTs: ['./src/infrastructure/database/entities', AcademicPeriod],
   extensions: [Migrator],
   migrations: {
     path: './dist/infrastructure/database/migrations',

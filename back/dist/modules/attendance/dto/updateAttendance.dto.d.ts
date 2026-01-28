@@ -1,3 +1,6 @@
+import { AttendanceStatus } from 'src/infrastructure/database/entities/Attendance';
 export declare class UpdateAttendanceDto {
-    status?: 'present' | 'absent' | 'late' | 'justified';
+    status?: AttendanceStatus;
+    notes?: string;
+    date?: string;
 }

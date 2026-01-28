@@ -12,26 +12,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TakeClassAttendanceDto = exports.AttendanceRecordDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const Attendance_1 = require("../../../infrastructure/database/entities/Attendance");
 class AttendanceRecordDto {
 }
 exports.AttendanceRecordDto = AttendanceRecordDto;
 __decorate([
-    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], AttendanceRecordDto.prototype, "studentId", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(['present', 'absent', 'late', 'justified']),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(Attendance_1.AttendanceStatus),
     __metadata("design:type", String)
 ], AttendanceRecordDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AttendanceRecordDto.prototype, "notes", void 0);
 class TakeClassAttendanceDto {
 }
 exports.TakeClassAttendanceDto = TakeClassAttendanceDto;
 __decorate([
-    (0, class_validator_1.IsDateString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], TakeClassAttendanceDto.prototype, "classId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], TakeClassAttendanceDto.prototype, "academicPeriodId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
 ], TakeClassAttendanceDto.prototype, "date", void 0);
 __decorate([

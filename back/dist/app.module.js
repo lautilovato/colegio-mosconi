@@ -24,6 +24,7 @@ const Attendance_1 = require("./infrastructure/database/entities/Attendance");
 const students_module_1 = require("./modules/students/students.module");
 const class_module_1 = require("./modules/class/class.module");
 const attendance_module_1 = require("./modules/attendance/attendance.module");
+const academic_period_module_1 = require("./modules/academic-period/academic-period.module");
 let AppModule = class AppModule {
     constructor(orm) {
         this.orm = orm;
@@ -70,6 +71,7 @@ exports.AppModule = AppModule = __decorate([
             students_module_1.StudentsModule,
             class_module_1.ClassModule,
             attendance_module_1.AttendanceModule,
+            academic_period_module_1.AcademicPeriodModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

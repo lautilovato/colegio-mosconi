@@ -4,6 +4,7 @@ const postgresql_1 = require("@mikro-orm/postgresql");
 const path_1 = require("path");
 const migrations_1 = require("@mikro-orm/migrations");
 const dotenv = require("dotenv");
+const AcademicPeriod_1 = require("./database/entities/AcademicPeriod");
 dotenv.config({ path: (0, path_1.join)(__dirname, '../../', '.env') });
 exports.default = (0, postgresql_1.defineConfig)({
     host: process.env.DATABASE_HOST,
@@ -11,8 +12,8 @@ exports.default = (0, postgresql_1.defineConfig)({
     dbName: process.env.DATABASE_NAME,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
-    entities: ['./dist/infrastructure/database/entities'],
-    entitiesTs: ['./src/infrastructure/database/entities'],
+    entities: ['./dist/infrastructure/database/entities', AcademicPeriod_1.AcademicPeriod],
+    entitiesTs: ['./src/infrastructure/database/entities', AcademicPeriod_1.AcademicPeriod],
     extensions: [migrations_1.Migrator],
     migrations: {
         path: './dist/infrastructure/database/migrations',

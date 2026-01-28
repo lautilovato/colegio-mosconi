@@ -49,6 +49,14 @@
   font-weight: 700;
 }
 
+.class-meta-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
 .class-meta {
   display: flex;
   gap: 2rem;
@@ -59,6 +67,37 @@
   font-size: 1.1rem;
   color: #5a6c7d;
   font-weight: 500;
+}
+
+.take-attendance-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  white-space: nowrap;
+}
+
+.take-attendance-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+}
+
+.take-attendance-button:active {
+  transform: translateY(0);
+}
+
+.take-attendance-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 .class-content {
@@ -118,11 +157,22 @@
     font-size: 2rem;
   }
 
+  .class-meta-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
   .class-meta {
     gap: 1rem;
   }
 
   .meta-item {
     font-size: 1rem;
+  }
+
+  .take-attendance-button {
+    width: 100%;
+    justify-content: center;
   }
 }

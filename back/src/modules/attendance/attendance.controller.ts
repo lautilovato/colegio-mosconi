@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -17,48 +18,49 @@ import { UpdateAttendanceDto } from './dto/updateAttendance.dto';
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  // Tomar asistencia de toda una clase
-  @Post('class/:classId/take')
-  async takeClassAttendance(
-    @Param('classId', ParseIntPipe) classId: number,
-    @Body() dto: TakeClassAttendanceDto
-  ): Promise<Attendance[]> {
-    return this.attendanceService.takeClassAttendance(classId, dto);
+  @Post('class')
+  async takeClassAttendance(@Body() dto: TakeClassAttendanceDto): Promise<Attendance[]> {
+    return this.attendanceService.takeClassAttendance(dto);
   }
 
-  // Obtener asistencia de una clase en una fecha específica
-  @Get('class/:classId/date/:date')
-  async getClassAttendanceByDate(
-    @Param('classId', ParseIntPipe) classId: number,
-    @Param('date') date: string
-  ): Promise<Attendance[]> {
-    return this.attendanceService.getClassAttendanceByDate(classId, date);
-  }
-
-  // Obtener historial de asistencia de un estudiante
   @Get('student/:studentId')
-  async getStudentAttendanceHistory(
-    @Param('studentId', ParseIntPipe) studentId: number
+  async getStudentAttendance(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Query('academicPeriodId') academicPeriodId?: string,
   ): Promise<Attendance[]> {
-    return this.attendanceService.getStudentAttendanceHistory(studentId);
+    const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+    return this.attendanceService.getStudentAttendance(studentId, periodId);
   }
 
-  // Actualizar un registro de asistencia
+  @Get('class/:classId')
+  async getClassAttendance(
+    @Param('classId', ParseIntPipe) classId: number,
+    @Query('academicPeriodId') academicPeriodId?: string,
+    @Query('date') date?: string,
+  ): Promise<Attendance[]> {
+    const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+    return this.attendanceService.getClassAttendance(classId, periodId, date);
+  }
+
+  @Get('class/:classId/report')
+  async getClassAttendanceReport(
+    @Param('classId', ParseIntPipe) classId: number,
+    @Query('academicPeriodId') academicPeriodId?: string,
+  ) {
+    const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+    return this.attendanceService.getClassAttendanceReport(classId, periodId);
+  }
+
   @Patch(':id')
   async updateAttendance(
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateAttendanceDto
+    @Body() dto: UpdateAttendanceDto,
   ): Promise<Attendance> {
     return this.attendanceService.updateAttendance(id, dto);
   }
 
-  // Obtener reporte de asistencia de una clase
-  @Get('class/:classId/report')
-  async getClassAttendanceReport(
-    @Param('classId', ParseIntPipe) classId: number,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string
-  ) {
-    return this.attendanceService.getClassAttendanceReport(classId, startDate, endDate);
+  @Delete(':id')
+  async deleteAttendance(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.attendanceService.deleteAttendance(id);
   }
 }

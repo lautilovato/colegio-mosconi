@@ -1,20 +1,32 @@
-import { IsNumber, IsString, IsDateString, IsIn, IsNotEmpty, ValidateNested, IsArray } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsDateString, IsEnum, IsOptional, ValidateNested, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
+import { AttendanceStatus } from 'src/infrastructure/database/entities/Attendance';
 
 export class AttendanceRecordDto {
-  @IsNumber()
   @IsNotEmpty()
+  @IsNumber()
   studentId!: number;
 
-  @IsString()
-  @IsIn(['present', 'absent', 'late', 'justified'])
   @IsNotEmpty()
-  status!: 'present' | 'absent' | 'late' | 'justified';
+  @IsEnum(AttendanceStatus)
+  status!: AttendanceStatus;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
 
 export class TakeClassAttendanceDto {
-  @IsDateString()
   @IsNotEmpty()
+  @IsNumber()
+  classId!: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  academicPeriodId!: number;
+
+  @IsNotEmpty()
+  @IsDateString()
   date!: string;
 
   @IsArray()
