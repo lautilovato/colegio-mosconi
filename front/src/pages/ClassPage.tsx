@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StudentList from '../components/StudentList';
 import RegisterStudentModal from '../components/RegisterStudentModal';
+import ManagePeriodsSection from '../components/ManagePeriodsSection';
 import './ClassPage.css';
 
 interface Student {
@@ -19,11 +20,21 @@ interface Student {
   };
 }
 
+interface AcademicPeriod {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  year: number;
+  isActive: boolean;
+}
+
 interface Class {
   id: number;
   name: string;
   year: number;
   students: Student[];
+  academicPeriods?: AcademicPeriod[];
 }
 
 const ClassPage = () => {
@@ -47,11 +58,19 @@ const ClassPage = () => {
       }
       const data = await response.json();
       
+      // Obtener períodos académicos de la clase
+      const periodsResponse = await fetch(`http://localhost:3000/academic-periods/class/${classId}`);
+      if (periodsResponse.ok) {
+        const periodsData = await periodsResponse.json();
+        data.academicPeriods = periodsData;
+      } else {
+        data.academicPeriods = [];
+      }
+
       // Obtener estadísticas de asistencia
       const reportResponse = await fetch(`http://localhost:3000/attendance/class/${classId}/report`);
       if (reportResponse.ok) {
         const reportData = await reportResponse.json();
-        // Combinar datos de estudiantes con estadísticas
         data.students = data.students.map((student: Student) => {
           const stats = reportData.students.find((s: any) => s.student.id === student.id);
           return {
@@ -83,6 +102,10 @@ const ClassPage = () => {
 
   const handleStudentRegistered = () => {
     setIsModalOpen(false);
+    fetchClassData();
+  };
+
+  const handlePeriodsUpdated = () => {
     fetchClassData();
   };
 
@@ -131,13 +154,20 @@ const ClassPage = () => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M12 12H15M12 16H15M9 12H9.01M9 16H9.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              Tomar Lista
+              Tomar Asistencia
             </button>
           </div>
         </div>
       </div>
 
       <div className="class-content">
+        <ManagePeriodsSection
+          classId={parseInt(classId || '0')}
+          className={classData.name}
+          periods={classData.academicPeriods || []}
+          onPeriodsUpdated={handlePeriodsUpdated}
+        />
+
         <StudentList students={classData.students} onRegisterClick={handleOpenModal} />
       </div>
 

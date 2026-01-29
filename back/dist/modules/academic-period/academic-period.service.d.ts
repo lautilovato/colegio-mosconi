@@ -2,11 +2,9 @@ import { EntityManager } from '@mikro-orm/core';
 import { AcademicPeriod } from 'src/infrastructure/database/entities/AcademicPeriod';
 import { CreateAcademicPeriodDto } from './dto/createAcademicPeriod.dto';
 import { UpdateAcademicPeriodDto } from './dto/updateAcademicPeriod.dto';
-import { AcademicPeriodRepository } from './academic-period.repository';
 export declare class AcademicPeriodService {
-    private readonly academicPeriodRepository;
     private readonly em;
-    constructor(academicPeriodRepository: AcademicPeriodRepository, em: EntityManager);
+    constructor(em: EntityManager);
     create(createDto: CreateAcademicPeriodDto): Promise<AcademicPeriod>;
     findAll(classId?: string, year?: string, isActive?: string): Promise<AcademicPeriod[]>;
     findByClass(classId: number): Promise<AcademicPeriod[]>;

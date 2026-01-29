@@ -5,13 +5,11 @@ import { Class } from 'src/infrastructure/database/entities/Class';
 import { CreateAcademicPeriodDto } from './dto/createAcademicPeriod.dto';
 import { UpdateAcademicPeriodDto } from './dto/updateAcademicPeriod.dto';
 import { TransactionalMikroOrmClass } from 'src/shared/decorators/transactional-mikro-orm.decorator';
-import { AcademicPeriodRepository } from './academic-period.repository';
 
 @Injectable()
 @TransactionalMikroOrmClass()
 export class AcademicPeriodService {
   constructor(
-    private readonly academicPeriodRepository: AcademicPeriodRepository,
     private readonly em: EntityManager,
   ) {}
 
@@ -21,7 +19,7 @@ export class AcademicPeriodService {
       throw new NotFoundException(`Class with id ${createDto.classId} not found`);
     }
 
-    const overlapping = await this.academicPeriodRepository.findOne({
+    const overlapping = await this.em.findOne(AcademicPeriod, {
       class: classEntity,
       $or: [
         {
@@ -79,28 +77,30 @@ export class AcademicPeriodService {
       filter.isActive = isActive === 'true';
     }
 
-    return this.academicPeriodRepository.find(filter, {
+    return this.em.find(AcademicPeriod, filter, {
       populate: ['class'],
       orderBy: { year: 'DESC', startDate: 'DESC' },
     });
   }
 
   async findByClass(classId: number): Promise<AcademicPeriod[]> {
-    return this.academicPeriodRepository.find(
+    return this.em.find(
+      AcademicPeriod,
       { class: classId },
       { orderBy: { year: 'DESC', startDate: 'DESC' } },
     );
   }
 
   async findActiveByClass(classId: number): Promise<AcademicPeriod | null> {
-    return this.academicPeriodRepository.findOne({
+    return this.em.findOne(AcademicPeriod, {
       class: classId,
       isActive: true,
     });
   }
 
   async findOne(id: number): Promise<AcademicPeriod> {
-    const academicPeriod = await this.academicPeriodRepository.findOne(
+    const academicPeriod = await this.em.findOne(
+      AcademicPeriod,
       { id },
       { populate: ['class'] },
     );

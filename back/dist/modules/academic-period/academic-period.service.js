@@ -15,10 +15,8 @@ const core_1 = require("@mikro-orm/core");
 const AcademicPeriod_1 = require("../../infrastructure/database/entities/AcademicPeriod");
 const Class_1 = require("../../infrastructure/database/entities/Class");
 const transactional_mikro_orm_decorator_1 = require("../../shared/decorators/transactional-mikro-orm.decorator");
-const academic_period_repository_1 = require("./academic-period.repository");
 let AcademicPeriodService = class AcademicPeriodService {
-    constructor(academicPeriodRepository, em) {
-        this.academicPeriodRepository = academicPeriodRepository;
+    constructor(em) {
         this.em = em;
     }
     async create(createDto) {
@@ -26,7 +24,7 @@ let AcademicPeriodService = class AcademicPeriodService {
         if (!classEntity) {
             throw new common_1.NotFoundException(`Class with id ${createDto.classId} not found`);
         }
-        const overlapping = await this.academicPeriodRepository.findOne({
+        const overlapping = await this.em.findOne(AcademicPeriod_1.AcademicPeriod, {
             class: classEntity,
             $or: [
                 {
@@ -69,22 +67,22 @@ let AcademicPeriodService = class AcademicPeriodService {
         if (isActive !== undefined) {
             filter.isActive = isActive === 'true';
         }
-        return this.academicPeriodRepository.find(filter, {
+        return this.em.find(AcademicPeriod_1.AcademicPeriod, filter, {
             populate: ['class'],
             orderBy: { year: 'DESC', startDate: 'DESC' },
         });
     }
     async findByClass(classId) {
-        return this.academicPeriodRepository.find({ class: classId }, { orderBy: { year: 'DESC', startDate: 'DESC' } });
+        return this.em.find(AcademicPeriod_1.AcademicPeriod, { class: classId }, { orderBy: { year: 'DESC', startDate: 'DESC' } });
     }
     async findActiveByClass(classId) {
-        return this.academicPeriodRepository.findOne({
+        return this.em.findOne(AcademicPeriod_1.AcademicPeriod, {
             class: classId,
             isActive: true,
         });
     }
     async findOne(id) {
-        const academicPeriod = await this.academicPeriodRepository.findOne({ id }, { populate: ['class'] });
+        const academicPeriod = await this.em.findOne(AcademicPeriod_1.AcademicPeriod, { id }, { populate: ['class'] });
         if (!academicPeriod) {
             throw new common_1.NotFoundException(`Academic period with id ${id} not found`);
         }
@@ -122,7 +120,6 @@ exports.AcademicPeriodService = AcademicPeriodService;
 exports.AcademicPeriodService = AcademicPeriodService = __decorate([
     (0, common_1.Injectable)(),
     (0, transactional_mikro_orm_decorator_1.TransactionalMikroOrmClass)(),
-    __metadata("design:paramtypes", [academic_period_repository_1.AcademicPeriodRepository,
-        core_1.EntityManager])
+    __metadata("design:paramtypes", [core_1.EntityManager])
 ], AcademicPeriodService);
 //# sourceMappingURL=academic-period.service.js.map
