@@ -32,6 +32,10 @@ let AttendanceController = class AttendanceController {
         const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
         return this.attendanceService.getClassAttendance(classId, periodId, date);
     }
+    async checkAttendanceExists(classId, academicPeriodId, date) {
+        const periodId = parseInt(academicPeriodId);
+        return this.attendanceService.checkAttendanceExists(classId, periodId, date);
+    }
     async getClassAttendanceReport(classId, academicPeriodId) {
         const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
         return this.attendanceService.getClassAttendanceReport(classId, periodId);
@@ -68,6 +72,15 @@ __decorate([
     __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "getClassAttendance", null);
+__decorate([
+    (0, common_1.Get)('class/:classId/exists'),
+    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('academicPeriodId')),
+    __param(2, (0, common_1.Query)('date')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "checkAttendanceExists", null);
 __decorate([
     (0, common_1.Get)('class/:classId/report'),
     __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),

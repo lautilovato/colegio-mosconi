@@ -42,6 +42,16 @@ export class AttendanceController {
     return this.attendanceService.getClassAttendance(classId, periodId, date);
   }
 
+  @Get('class/:classId/exists')
+  async checkAttendanceExists(
+    @Param('classId', ParseIntPipe) classId: number,
+    @Query('academicPeriodId') academicPeriodId: string,
+    @Query('date') date: string,
+  ): Promise<{ exists: boolean; count: number }> {
+    const periodId = parseInt(academicPeriodId);
+    return this.attendanceService.checkAttendanceExists(classId, periodId, date);
+  }
+
   @Get('class/:classId/report')
   async getClassAttendanceReport(
     @Param('classId', ParseIntPipe) classId: number,

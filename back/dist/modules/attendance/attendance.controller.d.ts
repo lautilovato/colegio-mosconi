@@ -8,6 +8,10 @@ export declare class AttendanceController {
     takeClassAttendance(dto: TakeClassAttendanceDto): Promise<Attendance[]>;
     getStudentAttendance(studentId: number, academicPeriodId?: string): Promise<Attendance[]>;
     getClassAttendance(classId: number, academicPeriodId?: string, date?: string): Promise<Attendance[]>;
+    checkAttendanceExists(classId: number, academicPeriodId: string, date: string): Promise<{
+        exists: boolean;
+        count: number;
+    }>;
     getClassAttendanceReport(classId: number, academicPeriodId?: string): Promise<{
         class: {
             id: number & import("@mikro-orm/core").Opt.Brand;

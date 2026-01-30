@@ -1,0 +1,191 @@
+.student-attendance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background: white;
+  border: 2px solid #e8f4f8;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.student-attendance-row:hover {
+  border-color: #d0dce5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 0 0 300px;
+}
+
+.student-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.student-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-dni {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.attendance-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.status-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 2px solid;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.status-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-button.active {
+  transform: translateY(0);
+}
+
+.status-icon {
+  font-size: 1.1rem;
+}
+
+.status-label {
+  font-size: 0.9rem;
+}
+
+.notes-input-container {
+  flex: 1;
+  max-width: 300px;
+}
+
+.notes-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 2px solid #e8f4f8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.notes-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.notes-input::placeholder {
+  color: #bdc3c7;
+}
+
+@media (max-width: 1200px) {
+  .student-attendance-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .student-info {
+    flex: 1;
+  }
+
+  .attendance-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .status-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .status-button {
+    justify-content: center;
+  }
+
+  .notes-input-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-attendance-row {
+    padding: 1rem;
+  }
+
+  .student-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .student-name {
+    font-size: 1rem;
+  }
+
+  .status-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .status-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .status-icon {
+    font-size: 1rem;
+  }
+
+  .status-label {
+    display: none;
+  }
+}

@@ -1,6 +1,15 @@
+import { useLocation } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
+  const location = useLocation();
+  const isAttendancePage = location.pathname.includes('/attendance');
+
+  // No mostrar header en la página de tomar asistencia
+  if (isAttendancePage) {
+    return null;
+  }
+
   return (
     <header className="header">
       <div className="header-content">

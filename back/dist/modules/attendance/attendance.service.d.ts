@@ -12,6 +12,10 @@ export declare class AttendanceService {
     getClassAttendance(classId: number, academicPeriodId?: number, date?: string): Promise<Attendance[]>;
     updateAttendance(id: number, dto: UpdateAttendanceDto): Promise<Attendance>;
     deleteAttendance(id: number): Promise<void>;
+    checkAttendanceExists(classId: number, academicPeriodId: number, date: string): Promise<{
+        exists: boolean;
+        count: number;
+    }>;
     getClassAttendanceReport(classId: number, academicPeriodId?: number): Promise<{
         class: {
             id: number & import("@mikro-orm/core").Opt.Brand;

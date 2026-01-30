@@ -127,6 +127,25 @@ export class AttendanceService {
     await this.attendanceRepository.removeAndFlush(attendance);
   }
 
+  async checkAttendanceExists(
+    classId: number,
+    academicPeriodId: number,
+    date: string,
+  ): Promise<{ exists: boolean; count: number }> {
+    const attendanceDate = new Date(date);
+    
+    const existingAttendances = await this.attendanceRepository.find({
+      class: classId,
+      academicPeriod: academicPeriodId,
+      date: attendanceDate,
+    });
+
+    return {
+      exists: existingAttendances.length > 0,
+      count: existingAttendances.length,
+    };
+  }
+
   async getClassAttendanceReport(classId: number, academicPeriodId?: number) {
     const classEntity = await this.em.findOne(
       Class,
