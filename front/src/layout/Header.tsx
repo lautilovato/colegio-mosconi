@@ -1,20 +1,25 @@
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
-  const location = useLocation();
-  const isAttendancePage = location.pathname.includes('/attendance');
+  const navigate = useNavigate();
 
-  // No mostrar header en la página de tomar asistencia
-  if (isAttendancePage) {
-    return null;
-  }
+  const handleHomeClick = () => {
+    navigate('/');
+  };
 
   return (
     <header className="header">
       <div className="header-content">
-        <h1>Colegio Mosconi</h1>
-        <p className="subtitle">Sistema de Gestión Escolar</p>
+        <div className="header-left">
+          <h1>Colegio Mosconi</h1>
+          <p className="subtitle">Sistema de Gestión Escolar</p>
+        </div>
+        <nav className="header-nav">
+          <button className="nav-button" onClick={handleHomeClick}>
+            Inicio
+          </button>
+        </nav>
       </div>
     </header>
   );
