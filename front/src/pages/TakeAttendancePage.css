@@ -1,7 +1,9 @@
 .take-attendance-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #c3cdfa 0%, #c3d2ee 100%);
+  background: linear-gradient(135deg, #c9d2fd 0%, #a2bff5 100%);
   padding: 1.5rem;
+  padding-bottom: 1px;
+  margin-bottom: -32px;
 }
 
 .loading {
@@ -411,7 +413,7 @@
 }
 
 .students-list {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .no-students {
@@ -430,12 +432,11 @@
 .attendance-footer {
   background: white;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   gap: 1rem;
-  position: sticky;
-  bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .cancel-button,
@@ -547,11 +548,6 @@
 
   .attendance-footer {
     flex-direction: column;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 16px 16px 0 0;
     padding: 1rem;
   }
 }
