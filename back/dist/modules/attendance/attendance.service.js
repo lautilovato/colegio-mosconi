@@ -35,6 +35,9 @@ let AttendanceService = class AttendanceService {
         if (academicPeriod.class.id !== classEntity.id) {
             throw new common_1.BadRequestException('El período académico no pertenece a esta clase');
         }
+        if (!this.containDate(academicPeriod.startDate, academicPeriod.endDate, new Date(dto.date))) {
+            throw new common_1.BadRequestException('La fecha de asistencia no está dentro del período académico');
+        }
         const attendanceDate = new Date(dto.date);
         const existingAttendances = await this.attendanceRepository.find({
             class: classEntity,
@@ -63,6 +66,15 @@ let AttendanceService = class AttendanceService {
         }
         await this.em.persistAndFlush(attendances);
         return attendances;
+    }
+    containDate(startDate, endDate, currentDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        const current = new Date(currentDate);
+        current.setHours(0, 0, 0, 0);
+        return current >= start && current <= end;
     }
     async getStudentAttendance(studentId, academicPeriodId) {
         const filter = { student: studentId };

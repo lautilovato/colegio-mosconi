@@ -8,6 +8,7 @@ export declare class AttendanceService {
     private readonly em;
     constructor(attendanceRepository: AttendanceRepository, em: EntityManager);
     takeClassAttendance(dto: TakeClassAttendanceDto): Promise<Attendance[]>;
+    containDate(startDate: Date, endDate: Date, currentDate: Date): boolean;
     getStudentAttendance(studentId: number, academicPeriodId?: number): Promise<Attendance[]>;
     getClassAttendance(classId: number, academicPeriodId?: number, date?: string): Promise<Attendance[]>;
     updateAttendance(id: number, dto: UpdateAttendanceDto): Promise<Attendance>;
