@@ -129,9 +129,6 @@ const ClassPage = () => {
       <div className="class-page">
         <div className="error-message">
           <p>❌ {error || 'No se pudo cargar la clase'}</p>
-          <button onClick={handleBack} className="back-button">
-            Volver al inicio
-          </button>
         </div>
       </div>
     );

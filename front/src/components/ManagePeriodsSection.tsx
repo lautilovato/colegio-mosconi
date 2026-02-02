@@ -40,7 +40,9 @@ const ManagePeriodsSection = ({
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    // Parsear la fecha como local, no UTC, para evitar problemas de zona horaria
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
