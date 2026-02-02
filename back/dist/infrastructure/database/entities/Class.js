@@ -13,10 +13,14 @@ exports.Class = void 0;
 const core_1 = require("@mikro-orm/core");
 const BaseEntity_1 = require("./BaseEntity");
 const Student_1 = require("./Student");
+const Attendance_1 = require("./Attendance");
+const AcademicPeriod_1 = require("./AcademicPeriod");
 let Class = class Class extends BaseEntity_1.CustomBaseEntity {
     constructor() {
         super(...arguments);
         this.students = new core_1.Collection(this);
+        this.academicPeriods = new core_1.Collection(this);
+        this.attendances = new core_1.Collection(this);
     }
 };
 exports.Class = Class;
@@ -29,13 +33,25 @@ __decorate([
     __metadata("design:type", String)
 ], Class.prototype, "name", void 0);
 __decorate([
-    (0, core_1.Property)({ fieldName: 'year', nullable: true }),
+    (0, core_1.Property)({ fieldName: 'year', nullable: false }),
     __metadata("design:type", Number)
 ], Class.prototype, "year", void 0);
+__decorate([
+    (0, core_1.Property)({ fieldName: 'section', nullable: true }),
+    __metadata("design:type", String)
+], Class.prototype, "section", void 0);
 __decorate([
     (0, core_1.OneToMany)(() => Student_1.Student, (student) => student.class),
     __metadata("design:type", Object)
 ], Class.prototype, "students", void 0);
+__decorate([
+    (0, core_1.OneToMany)(() => AcademicPeriod_1.AcademicPeriod, (period) => period.class),
+    __metadata("design:type", Object)
+], Class.prototype, "academicPeriods", void 0);
+__decorate([
+    (0, core_1.OneToMany)(() => Attendance_1.Attendance, (attendance) => attendance.class),
+    __metadata("design:type", Object)
+], Class.prototype, "attendances", void 0);
 exports.Class = Class = __decorate([
     (0, core_1.Entity)()
 ], Class);

@@ -10,6 +10,14 @@ import {
 import { CustomBaseEntity } from './BaseEntity';
 import { Student } from './Student';
 import { Class } from './Class';
+import { AcademicPeriod } from './AcademicPeriod';
+
+export enum AttendanceStatus {
+  PRESENT = 'present',
+  ABSENT = 'absent',
+  LATE = 'late',
+  JUSTIFIED = 'justified',
+}
 
 @Entity()
 @Unique({ properties: ['student', 'class', 'date'] })
@@ -23,9 +31,15 @@ export class Attendance extends CustomBaseEntity {
   @ManyToOne(() => Class, { fieldName: 'class_id', nullable: false })
   class!: Class;
 
+  @ManyToOne(() => AcademicPeriod, { fieldName: 'academic_period_id', nullable: false })
+  academicPeriod!: AcademicPeriod;
+
   @Property({ fieldName: 'date', columnType: 'date', nullable: false })
   date!: Date;
 
-  @Property({ fieldName: 'status', nullable: false, columnType: 'varchar(20)'})
-  status!: 'present' | 'absent' | 'late' | 'justified';
+  @Property({ fieldName: 'status', nullable: false })
+  status!: AttendanceStatus;
+
+  @Property({ fieldName: 'notes', nullable: true })
+  notes?: string;
 }

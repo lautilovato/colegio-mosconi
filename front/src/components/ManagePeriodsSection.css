@@ -1,0 +1,242 @@
+.periods-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.periods-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.periods-empty h3 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.periods-empty p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.create-period-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.create-period-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.create-period-button:active {
+  transform: translateY(0);
+}
+
+.periods-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8f4f8;
+}
+
+.periods-header h2 {
+  font-size: 1.5rem;
+  color: #1e3c72;
+  font-weight: 700;
+  margin: 0;
+}
+
+.add-period-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.3rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.add-period-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.add-period-button:active {
+  transform: translateY(0);
+}
+
+.periods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.period-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border: 2px solid #e8f4f8;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.period-card:hover {
+  border-color: #d0dce5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.period-card.active {
+  border-color: #27ae60;
+  background: #f0fdf4;
+}
+
+.period-info {
+  flex: 1;
+}
+
+.period-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #27ae60;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.period-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #5a6c7d;
+  margin-bottom: 0.25rem;
+}
+
+.period-year {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.period-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggle-active-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f4f8;
+  color: #5a6c7d;
+  border: 2px solid #e0e8f0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-active-button:hover {
+  background: #e0e8f0;
+  border-color: #d0d8e0;
+}
+
+.toggle-active-button.active {
+  background: #27ae60;
+  color: white;
+  border-color: #27ae60;
+}
+
+.toggle-active-button.active:hover {
+  background: #229954;
+  border-color: #229954;
+}
+
+@media (max-width: 768px) {
+  .periods-section {
+    padding: 1.5rem;
+  }
+
+  .periods-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .add-period-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .period-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .period-actions {
+    width: 100%;
+  }
+
+  .toggle-active-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .periods-empty {
+    padding: 2rem 1rem;
+  }
+
+  .create-period-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

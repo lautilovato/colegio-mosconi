@@ -21,46 +21,74 @@ let AttendanceController = class AttendanceController {
     constructor(attendanceService) {
         this.attendanceService = attendanceService;
     }
-    async takeClassAttendance(classId, dto) {
-        return this.attendanceService.takeClassAttendance(classId, dto);
+    async takeClassAttendance(dto) {
+        return this.attendanceService.takeClassAttendance(dto);
     }
-    async getClassAttendanceByDate(classId, date) {
-        return this.attendanceService.getClassAttendanceByDate(classId, date);
+    async getStudentAttendance(studentId, academicPeriodId) {
+        const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+        return this.attendanceService.getStudentAttendance(studentId, periodId);
     }
-    async getStudentAttendanceHistory(studentId) {
-        return this.attendanceService.getStudentAttendanceHistory(studentId);
+    async getClassAttendance(classId, academicPeriodId, date) {
+        const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+        return this.attendanceService.getClassAttendance(classId, periodId, date);
+    }
+    async checkAttendanceExists(classId, academicPeriodId, date) {
+        const periodId = parseInt(academicPeriodId);
+        return this.attendanceService.checkAttendanceExists(classId, periodId, date);
+    }
+    async getClassAttendanceReport(classId, academicPeriodId) {
+        const periodId = academicPeriodId ? parseInt(academicPeriodId) : undefined;
+        return this.attendanceService.getClassAttendanceReport(classId, periodId);
     }
     async updateAttendance(id, dto) {
         return this.attendanceService.updateAttendance(id, dto);
     }
-    async getClassAttendanceReport(classId, startDate, endDate) {
-        return this.attendanceService.getClassAttendanceReport(classId, startDate, endDate);
+    async deleteAttendance(id) {
+        return this.attendanceService.deleteAttendance(id);
     }
 };
 exports.AttendanceController = AttendanceController;
 __decorate([
-    (0, common_1.Post)('class/:classId/take'),
-    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Post)('class'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, takeClassAttendance_dto_1.TakeClassAttendanceDto]),
+    __metadata("design:paramtypes", [takeClassAttendance_dto_1.TakeClassAttendanceDto]),
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "takeClassAttendance", null);
 __decorate([
-    (0, common_1.Get)('class/:classId/date/:date'),
-    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Param)('date')),
+    (0, common_1.Get)('student/:studentId'),
+    __param(0, (0, common_1.Param)('studentId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('academicPeriodId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
-], AttendanceController.prototype, "getClassAttendanceByDate", null);
+], AttendanceController.prototype, "getStudentAttendance", null);
 __decorate([
-    (0, common_1.Get)('student/:studentId'),
-    __param(0, (0, common_1.Param)('studentId', common_1.ParseIntPipe)),
+    (0, common_1.Get)('class/:classId'),
+    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('academicPeriodId')),
+    __param(2, (0, common_1.Query)('date')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
-], AttendanceController.prototype, "getStudentAttendanceHistory", null);
+], AttendanceController.prototype, "getClassAttendance", null);
+__decorate([
+    (0, common_1.Get)('class/:classId/exists'),
+    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('academicPeriodId')),
+    __param(2, (0, common_1.Query)('date')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "checkAttendanceExists", null);
+__decorate([
+    (0, common_1.Get)('class/:classId/report'),
+    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('academicPeriodId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "getClassAttendanceReport", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -70,14 +98,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "updateAttendance", null);
 __decorate([
-    (0, common_1.Get)('class/:classId/report'),
-    __param(0, (0, common_1.Param)('classId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Query)('startDate')),
-    __param(2, (0, common_1.Query)('endDate')),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], AttendanceController.prototype, "getClassAttendanceReport", null);
+], AttendanceController.prototype, "deleteAttendance", null);
 exports.AttendanceController = AttendanceController = __decorate([
     (0, common_1.Controller)('attendance'),
     __metadata("design:paramtypes", [attendance_service_1.AttendanceService])

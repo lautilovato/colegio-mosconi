@@ -1,8 +1,16 @@
-import { IsString, IsIn, IsOptional } from 'class-validator';
+import { IsOptional, IsEnum, IsString, IsDateString } from 'class-validator';
+import { AttendanceStatus } from 'src/infrastructure/database/entities/Attendance';
 
 export class UpdateAttendanceDto {
-  @IsString()
-  @IsIn(['present', 'absent', 'late', 'justified'])
   @IsOptional()
-  status?: 'present' | 'absent' | 'late' | 'justified';
+  @IsEnum(AttendanceStatus)
+  status?: AttendanceStatus;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @IsOptional()
+  @IsDateString()
+  date?: string;
 }

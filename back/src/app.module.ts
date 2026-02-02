@@ -12,6 +12,7 @@ import { Attendance } from './infrastructure/database/entities/Attendance';
 import { StudentsModule } from './modules/students/students.module';
 import { ClassModule } from './modules/class/class.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { AcademicPeriodModule } from './modules/academic-period/academic-period.module';
 
 @Module({
     imports: [
@@ -49,6 +50,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
       StudentsModule,
       ClassModule,
       AttendanceModule,
+      AcademicPeriodModule,
     ],
     controllers: [AppController],
     providers: [AppService],

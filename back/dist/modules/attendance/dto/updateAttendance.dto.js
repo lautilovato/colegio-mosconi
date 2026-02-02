@@ -11,13 +11,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateAttendanceDto = void 0;
 const class_validator_1 = require("class-validator");
+const Attendance_1 = require("../../../infrastructure/database/entities/Attendance");
 class UpdateAttendanceDto {
 }
 exports.UpdateAttendanceDto = UpdateAttendanceDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(['present', 'absent', 'late', 'justified']),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(Attendance_1.AttendanceStatus),
     __metadata("design:type", String)
 ], UpdateAttendanceDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateAttendanceDto.prototype, "notes", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], UpdateAttendanceDto.prototype, "date", void 0);
 //# sourceMappingURL=updateAttendance.dto.js.map

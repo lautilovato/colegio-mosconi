@@ -1,158 +1,202 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { TransactionalMikroOrmClass } from 'src/shared/decorators/transactional-mikro-orm.decorator';
-import { AttendanceRepository } from './attendance.repository';
-import { TakeClassAttendanceDto } from './dto/takeClassAttendance.dto';
-import { UpdateAttendanceDto } from './dto/updateAttendance.dto';
-import { Attendance } from 'src/infrastructure/database/entities/Attendance';
+import { EntityManager } from '@mikro-orm/core';
+import { Attendance, AttendanceStatus } from 'src/infrastructure/database/entities/Attendance';
 import { Student } from 'src/infrastructure/database/entities/Student';
 import { Class } from 'src/infrastructure/database/entities/Class';
-import { wrap, EntityManager } from '@mikro-orm/core';
+import { AcademicPeriod } from 'src/infrastructure/database/entities/AcademicPeriod';
+import { TakeClassAttendanceDto } from './dto/takeClassAttendance.dto';
+import { UpdateAttendanceDto } from './dto/updateAttendance.dto';
+import { TransactionalMikroOrmClass } from 'src/shared/decorators/transactional-mikro-orm.decorator';
+import { AttendanceRepository } from './attendance.repository';
 
 @Injectable()
 @TransactionalMikroOrmClass()
 export class AttendanceService {
   constructor(
-    private attendanceRepository: AttendanceRepository,
-    private readonly em: EntityManager
+    private readonly attendanceRepository: AttendanceRepository,
+    private readonly em: EntityManager,
   ) {}
 
-  // Tomar asistencia de toda una clase
-  async takeClassAttendance(classId: number, dto: TakeClassAttendanceDto): Promise<Attendance[]> {
-    const classEntity = await this.em.findOne(Class, { id: classId });
+  async takeClassAttendance(dto: TakeClassAttendanceDto): Promise<Attendance[]> {
+    const classEntity = await this.em.findOne(Class, { id: dto.classId });
     if (!classEntity) {
-      throw new NotFoundException(`Class with id ${classId} not found`);
+      throw new NotFoundException(`Class with id ${dto.classId} not found`);
     }
 
-    const date = new Date(dto.date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (date > today) {
-      throw new BadRequestException('No se puede tomar asistencia de fechas futuras');
+    const academicPeriod = await this.em.findOne(AcademicPeriod, { id: dto.academicPeriodId });
+    if (!academicPeriod) {
+      throw new NotFoundException(`Academic period with id ${dto.academicPeriodId} not found`);
     }
 
-    // Verificar que todos los estudiantes pertenezcan a la clase
-    const studentIds = dto.attendances.map(a => a.studentId);
-    const students = await this.em.find(Student, { 
-      id: { $in: studentIds },
-      class: classEntity 
-    });
-
-    if (students.length !== studentIds.length) {
-      throw new BadRequestException('Algunos estudiantes no pertenecen a esta clase');
+    if (academicPeriod.class.id !== classEntity.id) {
+      throw new BadRequestException('El período académico no pertenece a esta clase');
     }
 
-    // Verificar si ya existe asistencia para esta fecha
-    const existingAttendance = await this.attendanceRepository.find({
+    if (! this.containDate(academicPeriod.startDate, academicPeriod.endDate, new Date(dto.date))) {
+      throw new BadRequestException('La fecha de asistencia no está dentro del período académico');
+    }
+
+    const attendanceDate = new Date(dto.date);
+
+    const existingAttendances = await this.attendanceRepository.find({
       class: classEntity,
-      date: date
+      academicPeriod: academicPeriod,
+      date: attendanceDate,
     });
 
-    if (existingAttendance.length > 0) {
-      throw new BadRequestException(`Ya existe asistencia registrada para la fecha ${dto.date}`);
+    if (existingAttendances.length > 0) {
+      existingAttendances.forEach(attendance => this.em.remove(attendance));
+      await this.em.flush();
     }
 
-    // Crear los registros de asistencia
     const attendances: Attendance[] = [];
+
     for (const record of dto.attendances) {
-      const student = students.find(s => s.id === record.studentId);
-      if (student) {
-        const attendance = this.attendanceRepository.create({
-          student: student,
-          class: classEntity,
-          date: date,
-          status: record.status
-        });
-        attendances.push(attendance);
+      const student = await this.em.findOne(Student, { id: record.studentId });
+      if (!student) {
+        throw new NotFoundException(`Student with id ${record.studentId} not found`);
       }
+
+      const attendance = this.em.create(Attendance, {
+        student: student,
+        class: classEntity,
+        academicPeriod: academicPeriod,
+        date: attendanceDate,
+        status: record.status,
+        notes: record.notes,
+      });
+
+      attendances.push(attendance);
     }
 
     await this.em.persistAndFlush(attendances);
     return attendances;
   }
 
-  // Obtener asistencia de una clase en una fecha específica
-  async getClassAttendanceByDate(classId: number, date: string): Promise<Attendance[]> {
-    const classEntity = await this.em.findOne(Class, { id: classId });
-    if (!classEntity) {
-      throw new NotFoundException(`Class with id ${classId} not found`);
-    }
+  containDate(startDate: Date, endDate: Date, currentDate: Date): boolean {
+    // Normalizar las fechas para comparar solo año-mes-día (sin horas)
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
 
-    return this.attendanceRepository.find(
-      {
-        class: classEntity,
-        date: new Date(date)
-      },
-      { populate: ['student'] }
-    );
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    
+    const current = new Date(currentDate);
+    current.setHours(0, 0, 0, 0);
+    
+    return current >= start && current <= end;
   }
 
-  // Obtener historial de asistencia de un estudiante
-  async getStudentAttendanceHistory(studentId: number): Promise<Attendance[]> {
-    const student = await this.em.findOne(Student, { id: studentId });
-    if (!student) {
-      throw new NotFoundException(`Student with id ${studentId} not found`);
+  async getStudentAttendance(studentId: number, academicPeriodId?: number): Promise<Attendance[]> {
+    const filter: any = { student: studentId };
+    
+    if (academicPeriodId) {
+      filter.academicPeriod = academicPeriodId;
     }
 
-    return this.attendanceRepository.find(
-      { student: student },
-      { 
-        populate: ['class'],
-        orderBy: { date: 'DESC' }
-      }
-    );
+    return this.attendanceRepository.find(filter, {
+      populate: ['class', 'academicPeriod'],
+      orderBy: { date: 'DESC' },
+    });
   }
 
-  // Actualizar un registro de asistencia
-  async updateAttendance(attendanceId: number, dto: UpdateAttendanceDto): Promise<Attendance> {
-    const attendance = await this.attendanceRepository.findOne({ id: attendanceId });
+  async getClassAttendance(classId: number, academicPeriodId?: number, date?: string): Promise<Attendance[]> {
+    const filter: any = { class: classId };
+
+    if (academicPeriodId) {
+      filter.academicPeriod = academicPeriodId;
+    }
+
+    if (date) {
+      filter.date = new Date(date);
+    }
+
+    return this.attendanceRepository.find(filter, {
+      populate: ['student', 'academicPeriod'],
+      orderBy: { date: 'DESC' },
+    });
+  }
+
+  async updateAttendance(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
+    const attendance = await this.attendanceRepository.findOne({ id });
     if (!attendance) {
-      throw new NotFoundException(`Attendance with id ${attendanceId} not found`);
+      throw new NotFoundException(`Attendance with id ${id} not found`);
     }
 
     if (dto.status) {
       attendance.status = dto.status;
     }
+    if (dto.notes !== undefined) {
+      attendance.notes = dto.notes;
+    }
+    if (dto.date) {
+      attendance.date = new Date(dto.date);
+    }
 
-    await this.em.flush();
+    await this.attendanceRepository.flush();
     return attendance;
   }
 
-  // Obtener reporte de asistencia de una clase
-  async getClassAttendanceReport(classId: number, startDate?: string, endDate?: string) {
-    const classEntity = await this.em.findOne(Class, { id: classId }, { populate: ['students'] });
+  async deleteAttendance(id: number): Promise<void> {
+    const attendance = await this.attendanceRepository.findOne({ id });
+    if (!attendance) {
+      throw new NotFoundException(`Attendance with id ${id} not found`);
+    }
+    await this.attendanceRepository.removeAndFlush(attendance);
+  }
+
+  async checkAttendanceExists(classId: number, academicPeriodId: number, date: string,): Promise<{ exists: boolean; count: number }> {
+    const attendanceDate = new Date(date);
+    
+    const existingAttendances = await this.attendanceRepository.find({
+      class: classId,
+      academicPeriod: academicPeriodId,
+      date: attendanceDate,
+    });
+
+    return {
+      exists: existingAttendances.length > 0,
+      count: existingAttendances.length,
+    };
+  }
+
+  async getClassAttendanceReport(classId: number, academicPeriodId?: number) {
+    const classEntity = await this.em.findOne(
+      Class,
+      { id: classId },
+      { populate: ['students'] },
+    );
     if (!classEntity) {
       throw new NotFoundException(`Class with id ${classId} not found`);
     }
 
     const filter: any = { class: classEntity };
     
-    if (startDate && endDate) {
-      filter.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      };
+    if (academicPeriodId) {
+      filter.academicPeriod = academicPeriodId;
     }
 
     const attendances = await this.attendanceRepository.find(filter, {
-      populate: ['student']
+      populate: ['student'],
     });
 
-    // Agrupar por estudiante y calcular estadísticas
-    const studentStats = classEntity.students.getItems().map(student => {
-      const studentAttendances = attendances.filter(a => a.student.id === student.id);
+    const studentStats = classEntity.students.getItems().map((student) => {
+      const studentAttendances = attendances.filter((a) => a.student.id === student.id);
+
       const total = studentAttendances.length;
-      const present = studentAttendances.filter(a => a.status === 'present').length;
-      const absent = studentAttendances.filter(a => a.status === 'absent').length;
-      const late = studentAttendances.filter(a => a.status === 'late').length;
-      const justified = studentAttendances.filter(a => a.status === 'justified').length;
+      const present = studentAttendances.filter((a) => a.status === AttendanceStatus.PRESENT).length;
+      const absent = studentAttendances.filter((a) => a.status === AttendanceStatus.ABSENT).length;
+      const late = studentAttendances.filter((a) => a.status === AttendanceStatus.LATE).length;
+      const justified = studentAttendances.filter((a) => a.status === AttendanceStatus.JUSTIFIED).length;
+
+      const attendanceRate = total > 0 ? ((present + late) / total) * 100 : 0;
 
       return {
         student: {
           id: student.id,
           firstName: student.firstName,
           lastName: student.lastName,
-          dni: student.dni
+          dni: student.dni,
         },
         statistics: {
           total,
@@ -160,22 +204,35 @@ export class AttendanceService {
           absent,
           late,
           justified,
-          attendanceRate: total > 0 ? ((present + late) / total * 100).toFixed(2) : 0
-        }
+          attendanceRate: attendanceRate.toFixed(2),
+        },
       };
     });
+
+    const totalAttendances = attendances.length;
+    const totalPresent = attendances.filter((a) => a.status === AttendanceStatus.PRESENT).length;
+    const totalAbsent = attendances.filter((a) => a.status === AttendanceStatus.ABSENT).length;
+    const totalLate = attendances.filter((a) => a.status === AttendanceStatus.LATE).length;
+    const totalJustified = attendances.filter((a) => a.status === AttendanceStatus.JUSTIFIED).length;
+
+    const classAttendanceRate =
+      totalAttendances > 0 ? ((totalPresent + totalLate) / totalAttendances) * 100 : 0;
 
     return {
       class: {
         id: classEntity.id,
         name: classEntity.name,
-        year: classEntity.year
+        year: classEntity.year,
       },
-      period: {
-        startDate: startDate || null,
-        endDate: endDate || null
+      classStatistics: {
+        total: totalAttendances,
+        present: totalPresent,
+        absent: totalAbsent,
+        late: totalLate,
+        justified: totalJustified,
+        attendanceRate: classAttendanceRate.toFixed(2),
       },
-      students: studentStats
+      students: studentStats,
     };
   }
 }

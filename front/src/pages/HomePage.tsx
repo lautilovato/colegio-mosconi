@@ -111,7 +111,7 @@ const HomePage = () => {
 
         {error && (
           <div className="error-message">
-            <p>❌ {error}</p>
+            <p>❌ Error al cargar las clases</p>
             <button onClick={() => fetchClasses()} className="retry-button">
               Reintentar
             </button>
