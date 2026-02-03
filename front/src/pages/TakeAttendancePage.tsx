@@ -328,8 +328,7 @@ const TakeAttendancePage = () => {
         <div className="error-container">
           <div className="error-icon">⚠️</div>
           <h2>No se puede tomar asistencia</h2>
-          <p>{error || 'No se pudo cargar la información necesaria'}</p>
-          <button onClick={() => navigate(`/classes/${classId}`)} className="back-button-error">
+          <button onClick={() => navigate(`/class/${classId}`)} className="back-button-error">
             ← Volver a la clase
           </button>
         </div>

@@ -170,26 +170,45 @@ export class AttendanceService {
       throw new NotFoundException(`Class with id ${classId} not found`);
     }
 
+    // Obtener todos los períodos académicos de la clase
+    const allPeriods = await this.em.find(AcademicPeriod, { class: classEntity });
+    
+    // Fecha actual normalizada en UTC
+    const now = new Date();
+    const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    
+    const totalValidDays = this.totalValidDaysInPeriods(allPeriods, today);
+
     const filter: any = { class: classEntity };
     
     if (academicPeriodId) {
       filter.academicPeriod = academicPeriodId;
     }
 
+    // Filtrar asistencias solo hasta la fecha actual (inclusive)
     const attendances = await this.attendanceRepository.find(filter, {
-      populate: ['student'],
+      populate: ['student', 'academicPeriod'],
+    });
+
+    const validAttendances = attendances.filter(a => {
+      const attendanceDate = new Date(a.date);
+      attendanceDate.setHours(0, 0, 0, 0);
+      return attendanceDate <= today;
     });
 
     const studentStats = classEntity.students.getItems().map((student) => {
-      const studentAttendances = attendances.filter((a) => a.student.id === student.id);
+      const studentAttendances = validAttendances.filter((a) => a.student.id === student.id);
 
-      const total = studentAttendances.length;
       const present = studentAttendances.filter((a) => a.status === AttendanceStatus.PRESENT).length;
       const absent = studentAttendances.filter((a) => a.status === AttendanceStatus.ABSENT).length;
       const late = studentAttendances.filter((a) => a.status === AttendanceStatus.LATE).length;
       const justified = studentAttendances.filter((a) => a.status === AttendanceStatus.JUSTIFIED).length;
 
-      const attendanceRate = total > 0 ? ((present + late) / total) * 100 : 0;
+      // Total de días posibles para este estudiante basado en períodos válidos
+      const possibleAttendances = totalValidDays;
+
+      // Calcular porcentaje basado en días posibles, no en registros existentes
+      const attendanceRate = possibleAttendances > 0 ? ((present + late) / possibleAttendances) * 100 : 0;
 
       return {
         student: {
@@ -199,7 +218,7 @@ export class AttendanceService {
           dni: student.dni,
         },
         statistics: {
-          total,
+          total: possibleAttendances, // Total de días posibles
           present,
           absent,
           late,
@@ -209,14 +228,16 @@ export class AttendanceService {
       };
     });
 
-    const totalAttendances = attendances.length;
-    const totalPresent = attendances.filter((a) => a.status === AttendanceStatus.PRESENT).length;
-    const totalAbsent = attendances.filter((a) => a.status === AttendanceStatus.ABSENT).length;
-    const totalLate = attendances.filter((a) => a.status === AttendanceStatus.LATE).length;
-    const totalJustified = attendances.filter((a) => a.status === AttendanceStatus.JUSTIFIED).length;
+    const totalPresent = validAttendances.filter((a) => a.status === AttendanceStatus.PRESENT).length;
+    const totalAbsent = validAttendances.filter((a) => a.status === AttendanceStatus.ABSENT).length;
+    const totalLate = validAttendances.filter((a) => a.status === AttendanceStatus.LATE).length;
+    const totalJustified = validAttendances.filter((a) => a.status === AttendanceStatus.JUSTIFIED).length;
+
+    const totalStudents = classEntity.students.length;
+    const totalPossibleAttendances = totalValidDays * totalStudents;
 
     const classAttendanceRate =
-      totalAttendances > 0 ? ((totalPresent + totalLate) / totalAttendances) * 100 : 0;
+      totalPossibleAttendances > 0 ? ((totalPresent + totalLate) / totalPossibleAttendances) * 100 : 0;
 
     return {
       class: {
@@ -225,7 +246,7 @@ export class AttendanceService {
         year: classEntity.year,
       },
       classStatistics: {
-        total: totalAttendances,
+        total: totalPossibleAttendances,
         present: totalPresent,
         absent: totalAbsent,
         late: totalLate,
@@ -235,4 +256,33 @@ export class AttendanceService {
       students: studentStats,
     };
   }
+
+  totalValidDaysInPeriods(periods: AcademicPeriod[], upToDate: Date): number {
+    let totalDays = 0;
+    for (const period of periods) {      
+      totalDays += this.totalValidDaysInPeriod(period, upToDate);
+    }
+    return totalDays;
+  }
+
+  totalValidDaysInPeriod(period: AcademicPeriod, today: Date): number {
+    const startDate = new Date(period.startDate);
+    startDate.setUTCHours(0, 0, 0, 0);
+    
+    const endDate = new Date(period.endDate);
+    endDate.setUTCHours(0, 0, 0, 0);
+
+    const todayNormalized = new Date(today);
+    today.setUTCHours(0, 0, 0, 0);
+  
+    let validDays = 0;
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate && currentDate <= todayNormalized) {
+      validDays++;
+      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    }
+    return validDays;
+  }
+
 }
