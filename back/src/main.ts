@@ -16,11 +16,12 @@ async function bootstrap() {
   
   // Configurar CORS para permitir peticiones del frontend
   app.enableCors({
-    origin: 'http://localhost:5173', // Puerto por defecto de Vite
+    origin: true, // Permite cualquier origen en producción
     credentials: true,
   });
   
-  await app.listen(3000);
-  console.log('🚀 Servidor ejecutándose en http://localhost:3000');
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Servidor ejecutándose en puerto ${port}`);
 }
 bootstrap();

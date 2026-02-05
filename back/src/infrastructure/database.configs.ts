@@ -7,11 +7,12 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: join(__dirname, '../../', '.env') });
 
 export default defineConfig({
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  dbName: process.env.DATABASE_NAME,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
+  clientUrl: process.env.DATABASE_URL || undefined,
+  host: process.env.DATABASE_URL ? undefined : process.env.DATABASE_HOST,
+  port: process.env.DATABASE_URL ? undefined : Number(process.env.DATABASE_PORT),
+  dbName: process.env.DATABASE_URL ? undefined : process.env.DATABASE_NAME,
+  user: process.env.DATABASE_URL ? undefined : process.env.DATABASE_USER,
+  password: process.env.DATABASE_URL ? undefined : process.env.DATABASE_PASSWORD,
   entities: ['./dist/infrastructure/database/entities'],
   entitiesTs: ['./src/infrastructure/database/entities'],
   extensions: [Migrator],
