@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import StudentList from '../components/StudentList';
 import RegisterStudentModal from '../components/RegisterStudentModal';
 import ManagePeriodsSection from '../components/ManagePeriodsSection';
+import { API_URL } from '../config/api';
 import './ClassPage.css';
 
 interface Student {
@@ -52,14 +53,16 @@ const ClassPage = () => {
   const fetchClassData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3000/classes/${classId}`);
+      setError(null);
+
+      const response = await fetch(`${API_URL}/classes/${classId}`);
       if (!response.ok) {
         throw new Error('Error al cargar la clase');
       }
       const data = await response.json();
       
       // Obtener períodos académicos de la clase
-      const periodsResponse = await fetch(`http://localhost:3000/academic-periods/class/${classId}`);
+      const periodsResponse = await fetch(`${API_URL}/academic-periods/class/${classId}`);
       if (periodsResponse.ok) {
         const periodsData = await periodsResponse.json();
         data.academicPeriods = periodsData;
@@ -68,7 +71,7 @@ const ClassPage = () => {
       }
 
       // Obtener estadísticas de asistencia
-      const reportResponse = await fetch(`http://localhost:3000/attendance/class/${classId}/report`);
+      const reportResponse = await fetch(`${API_URL}/attendance/class/${classId}/report`);
       if (reportResponse.ok) {
         const reportData = await reportResponse.json();
         data.students = data.students.map((student: Student) => {

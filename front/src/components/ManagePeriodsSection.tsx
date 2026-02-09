@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './ManagePeriodsSection.css';
 import CreateAcademicPeriodModal from './CreateAcademicPeriodModal';
+import { API_URL } from '../config/api';
 
 interface AcademicPeriod {
   id: number;
@@ -48,7 +49,7 @@ const ManagePeriodsSection = ({
 
   const handleToggleActive = async (periodId: number, currentStatus: boolean) => {
     try {
-      const response = await fetch(`http://localhost:3000/academic-periods/${periodId}`, {
+      const response = await fetch(`${API_URL}/academic-periods/${periodId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

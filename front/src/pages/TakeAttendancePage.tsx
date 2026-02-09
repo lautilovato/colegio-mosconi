@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import StudentAttendanceRow from '../components/StudentAttendanceRow';
 import type { AttendanceStatus } from '../components/StudentAttendanceRow';
+import { API_URL } from '../config/api';
 import './TakeAttendancePage.css';
 
 interface Student {
@@ -62,53 +63,39 @@ const TakeAttendancePage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [classId]);
-
-  useEffect(() => {
-    if (activePeriod && attendanceDate && classData) {
-      loadAttendanceForDate();
-    }
-  }, [attendanceDate, activePeriod, classData]);
+  }, [classId, attendanceDate]); // Agregar attendanceDate como dependencia
 
   const fetchData = async () => {
+    if (!classId) return;
+    
     try {
       setLoading(true);
       setError(null);
 
-      // Cargar datos de la clase
-      const classResponse = await fetch(`http://localhost:3000/classes/${classId}`);
-      if (!classResponse.ok) throw new Error('Error al cargar la clase');
+      const classResponse = await fetch(`${API_URL}/classes/${classId}`);
+      if (!classResponse.ok) {
+        throw new Error('Error al cargar la clase');
+      }
       const classData = await classResponse.json();
       setClassData(classData);
 
-      // Cargar período activo
-      const periodResponse = await fetch(
-        `http://localhost:3000/academic-periods/class/${classId}/active`
+      const activePeriodResponse = await fetch(
+        `${API_URL}/academic-periods/class/${classId}/active`
       );
-      if (periodResponse.ok) {
-        const periodData = await periodResponse.json();
-        setActivePeriod(periodData);
-      } else {
-        setError('No hay un período académico activo. Por favor, activa un período primero.');
+      if (!activePeriodResponse.ok) {
+        setError('No hay un período académico activo para esta clase');
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadAttendanceForDate = async () => {
-    if (!activePeriod || !classId || !classData) return;
-
-    try {
-      // Intentar cargar asistencia existente para esta fecha
-      const response = await fetch(
-        `http://localhost:3000/attendance/class/${classId}?academicPeriodId=${activePeriod.id}&date=${attendanceDate}`
-      );
+      const activePeriod = await activePeriodResponse.json();
+      setActivePeriod(activePeriod);
       
-      if (response.ok) {
-        const existingAttendances: ExistingAttendance[] = await response.json();
+      const attendanceResponse = await fetch(
+        `${API_URL}/attendance/class/${classId}?academicPeriodId=${activePeriod.id}&date=${attendanceDate}`
+      );
+
+      if (attendanceResponse.ok) {
+        const existingAttendances: ExistingAttendance[] = await attendanceResponse.json();
         
         if (existingAttendances.length > 0) {
           // Hay asistencia registrada para esta fecha
@@ -151,6 +138,8 @@ const TakeAttendancePage = () => {
       console.error('Error loading attendance for date:', err);
       resetAttendanceRecords();
       setIsViewingExisting(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -236,7 +225,7 @@ const TakeAttendancePage = () => {
         notes: record.notes || undefined,
       }));
 
-      const response = await fetch('http://localhost:3000/attendance/class', {
+      const response = await fetch(`${API_URL}/attendance/class`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

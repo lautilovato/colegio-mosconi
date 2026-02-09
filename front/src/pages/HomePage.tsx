@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ClassCard from '../components/ClassCard';
 import ClassFilters from '../components/ClassFilters';
 import RegisterClassModal from '../components/RegisterClassModal';
+import { API_URL } from '../config/api';
 import './HomePage.css';
 
 interface Class {
@@ -41,7 +42,7 @@ const HomePage = () => {
         params.append('year', year.trim());
       }
       
-      const url = `http://localhost:3000/classes${params.toString() ? '?' + params.toString() : ''}`;
+      const url = `${API_URL}/classes${params.toString() ? '?' + params.toString() : ''}`;
       
       const response = await fetch(url);
       if (!response.ok) {

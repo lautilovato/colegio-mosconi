@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../config/api';
 import './CreateAcademicPeriodModal.css';
 
 interface CreateAcademicPeriodModalProps {
@@ -47,7 +48,7 @@ const CreateAcademicPeriodModal = ({
         isActive: formData.isActive,
       };
 
-      const response = await fetch('http://localhost:3000/academic-periods', {
+      const response = await fetch(`${API_URL}/academic-periods`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

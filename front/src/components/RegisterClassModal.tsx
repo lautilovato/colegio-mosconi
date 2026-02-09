@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../config/api';
 import './RegisterClassModal.css';
 
 interface RegisterClassModalProps {
@@ -37,7 +38,7 @@ const RegisterClassModal = ({ onClose, onSuccess }: RegisterClassModalProps) => 
         payload.section = formData.section;
       }
 
-      const response = await fetch('http://localhost:3000/classes', {
+      const response = await fetch(`${API_URL}/classes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
